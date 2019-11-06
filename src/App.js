@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import './App.css'
-import { Select, Divider, Button, Switch, Tooltip, TextField, Typography, MenuItem, FormControl, InputLabel, OutlinedInput } from '@material-ui/core'
+import { Select, Divider, Button, Switch, Tooltip, TextField, Typography, MenuItem, FormControl, InputLabel } from '@material-ui/core'
 import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles'
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline'
 import MonetizationOnRoundedIcon from '@material-ui/icons/MonetizationOnRounded'
 import MoneyOffRoundedIcon from '@material-ui/icons/MoneyOffRounded'
 import AccountBalanceRoundedIcon from '@material-ui/icons/AccountBalanceRounded'
+import LocalAtmIcon from '@material-ui/icons/LocalAtm'
 
 const theme = createMuiTheme ({
   overrides: {
@@ -14,7 +15,7 @@ const theme = createMuiTheme ({
         backgroundColor: '#fff',
         color: '#222',
         fontSize: 16,
-        boxShadow: '1px 2px 10px 0 rgba(0,0,0,.05)'
+        boxShadow: '1px 2px 10px 0 rgba(0,0,0,.2)'
       }
     }
   }
@@ -27,12 +28,20 @@ class App extends Component {
     vatRatio: 23,
     vatType: 18,
     nettoCost: '',
-    nettoDeduction: ''
+    nettoDeduction: '',
+    isTaxFree: false,
+    isDeducted: false,
+    isSickness: false
   }
 
   handleChange = e => {
     this.setState ({
       [e.target.name]: e.target.value
+    })
+  }
+  handleSwitch = e => {
+    this.setState ({
+      [e.target.name]: !this.state[e.target.name]
     })
   }
 
@@ -81,6 +90,7 @@ class App extends Component {
             color='primary'
             onChange={this.handleChange}
             value={this.state.nettoValue}
+            style={{marginRight: 15}}
             />
             <Tooltip title={
             <React.Fragment>
@@ -118,7 +128,8 @@ class App extends Component {
               name='vatType'
               onChange={this.handleChange}
               value={this.state.vatType}
-              labelWidth={162}
+              labelWidth={188}
+              style={{marginRight: 15}}
               >
                 <MenuItem value={18}>{`Stawka progresywna (18%/32%)`}</MenuItem>
                 <MenuItem value={19}>{`Stawka liniowa (19%)`}</MenuItem>
@@ -126,8 +137,19 @@ class App extends Component {
             </FormControl>
             <Tooltip title={
             <React.Fragment>
-              <Typography>Przychód netto</Typography>
-              <p>Kwota netto na wystawionych fakturach. Od tej kwoty zostanie obliczony podatek VAT. Suma kwoty netto i VAT stanowi kwotę brutto, którą otrzymasz jako wynagrodzenie.</p>
+              <Typography>Wybór formy opodatkowania</Typography>
+              <p>Progresywna skala podatkowa</p>
+              <p>Opodatkowanie na zasadach ogólnych według skali podatkowej polega na opłaceniu podatku w wysokości 18% od podstawy opodatkowania nieprzekraczającej 85 528 zł oraz według stawki 32% od nadwyżki ponad 85 528 zł. Warto zaznaczyć, że w przypadku podatku obliczanego według skali, podstawę opodatkowania można obniżyć o kwotę wolną o podatku wynoszącą 556,02 zł.
+                
+              <p>Skala I</p>
+              <p>18% od podstawy opodatkowania nieprzekraczającej 85 528 zł.</p>
+              
+              <p>Skala II</p>
+              <p>32% od nadwyżki ponad 85 528 zł.</p>
+              
+              
+              Podatek liniowy
+              OpisPodczas opodatkowania podatkiem liniowym podatek opłaca się według stałej stawki 19% bez względu na wysokość osiąganego dochodu. Rozliczając się podatkiem liniowym tracimy możliwość skorzystania z ulg podatkowych oraz uwzględnienia kwoty wolnej od podatku.</p>
             </React.Fragment>
             }
             placement='right'
@@ -139,14 +161,16 @@ class App extends Component {
           <div className='align bt'>
             <React.Fragment>
               <div className="align">
-              <Switch />
+              <Switch color='primary'
+              onChange={this.handleSwitch}
+              name='isTaxFree' />
               <Typography>Uwzględnij kwotę wolną od podatku</Typography>
               </div>
               </React.Fragment>
               <Tooltip title={
             <React.Fragment>
-              <Typography>Przychód netto</Typography>
-              <p>Kwota netto na wystawionych fakturach. Od tej kwoty zostanie obliczony podatek VAT. Suma kwoty netto i VAT stanowi kwotę brutto, którą otrzymasz jako wynagrodzenie.</p>
+              <Typography>Kwota wolna od podatku</Typography>
+              <p>Kwota jest wolna od opodatkowania jeśli nie przekracza 3091 zł w skali roku. Możliwość zmniejszenia podatku o 556,02 zł rocznie tylko gdy formą opodatkowania jest skala podatkowa.</p>
             </React.Fragment>
             }
             placement='right'
@@ -156,14 +180,16 @@ class App extends Component {
             </div>
           </div>
           {/* END */}
-
           {/* START */}
           <div className='element'>
             <strong style={{marginBottom: 20}} >Informacje o ZUS</strong>
             <div className='align bt'>
               <React.Fragment>
                 <div className='align'>
-                <Switch color='primary' />
+                <Switch
+                color='primary'
+                onChange={this.handleSwitch}
+                name='isDeducted' />
                 <Typography>Składka obniżona</Typography>
                 </div>
                 <Tooltip title={
@@ -181,7 +207,9 @@ class App extends Component {
             <div className='align bt'>
               <React.Fragment>
                 <div className="align">
-                <Switch color='primary' />
+                <Switch color='primary'
+                onChange={this.handleSwitch}
+                name='isSickness' />
                 <Typography>Ubezpieczenie chorobowe</Typography>
                 </div>
                 <Tooltip title={
@@ -198,7 +226,6 @@ class App extends Component {
             </div>
           </div>
           {/* END */}
-
           {/* START */}
           <div className='element'>
             <strong style={{marginBottom: 20}} >Informacje o kosztach</strong>
@@ -235,10 +262,8 @@ class App extends Component {
               // onClick={this.handleClick}
               >Dodaj koszt</Button>
             </div>
-
           </div>
           {/* END */}
-
           {/* START */}
           <div className='element'>
             <strong style={{marginBottom: 20}} >Podsumowanie</strong>
@@ -259,7 +284,7 @@ class App extends Component {
             {/* ELEMENT START */}
             <div className='align bt mt'>
                 <div className='align'>
-                  <MonetizationOnRoundedIcon fontSize='large' />
+                  <MoneyOffRoundedIcon fontSize='large' />
                   <Typography style={{marginLeft: 10}}>Podatek VAT</Typography>
                 </div>
                 <div className='right'>
@@ -272,7 +297,7 @@ class App extends Component {
             {/* ELEMENT START */}
             <div className='align bt mt'>
                 <div className='align'>
-                  <MonetizationOnRoundedIcon fontSize='large' />
+                  <AccountBalanceRoundedIcon fontSize='large' />
                   <Typography style={{marginLeft: 10}}>Podatek dochodowy</Typography>
                 </div>
                 <div className='right'>
@@ -309,7 +334,7 @@ class App extends Component {
             {/* ELEMENT START */}
             <div className='align bt mt'>
                 <div className='align'>
-                  <MonetizationOnRoundedIcon fontSize='large' />
+                  <LocalAtmIcon fontSize='large' />
                   <Typography style={{marginLeft: 10}}>Składki do ZUS</Typography>
                 </div>
                 <div className='right'>
