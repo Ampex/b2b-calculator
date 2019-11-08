@@ -24,14 +24,14 @@ const theme = createMuiTheme ({
 class App extends Component {
 
   state = {
-    nettoValue: 2859,
+    nettoValue: 60000,
     vatRatio: 23,
     vatType: 18,
     nettoCost: '',
     nettoDeduction: '',
     isTaxFree: false,
     isDeducted: false,
-    isSickness: false
+    isSickness: true
   }
 
   handleChange = e => {
@@ -46,29 +46,30 @@ class App extends Component {
   }
 
   render() {
+    
+    const { nettoValue, vatRatio, vatType, isSickness, isDeducted } = this.state
 
-    const socialTax = 2859
+    const socialRatio = isDeducted ? 675 : 2859
+    const healthRatio = 3803.56
+    const pensionRatio = 0.1952
+    const pensionDisabilityRatio = 0.08
+    const accidentRatio = 0.0167
+    const sicknessRatio = 0.0245
+    const laborRatio = 0.0245
 
-    const pension = (0.1952*socialTax)
-    const pensionDisability = (0.08*socialTax)
-    const accident = ((1.67/100)*socialTax)
-    const sickness = ((2.45/100)*socialTax)
-    const labor = ((2.45/100)*socialTax)
-    const healthCare = (0.09*3803.56)
+    const vatTax = vatRatio/100*nettoValue 
 
-    console.log(pension, 'pension')
-    console.log(pensionDisability, 'pensionDisability')
-    console.log(accident, 'accident')
-    console.log(sickness, 'sickness')
-    console.log(labor, 'labor')
-    console.log(healthCare, 'healthCare')
+    const pension = pensionRatio*socialRatio
+    const pensionDisability = pensionDisabilityRatio*socialRatio
+    const accident = accidentRatio*socialRatio
+    const sickness = isSickness ? 0 : sicknessRatio*socialRatio
+    const labor = isDeducted ? 0 : laborRatio*socialRatio
+    const healthCare = 0.09*healthRatio
 
     const social = pension + pensionDisability + accident + sickness
     const contributons = social + labor + healthCare
-
-    console.log(social, 'social')
-    console.log(contributons, 'contributons')
-    
+    const incomeTax = nettoValue * 0.18 - healthCare
+    const onHand = nettoValue - vatTax - incomeTax
 
     return (
       <ThemeProvider theme={theme} >
@@ -82,6 +83,7 @@ class App extends Component {
 
           <div className='align'>
             <TextField
+            inputProps={{ maxLength: 10 }}
             fullWidth
             type='number'
             name='nettoValue'
@@ -105,13 +107,13 @@ class App extends Component {
           </div>
 
           <div className='align'>
-            <FormControl variant='outlined' fullWidth>
+            <FormControl style={{marginRight: 40}} variant='outlined' fullWidth>
               <InputLabel>Stawka VAT</InputLabel>
               <Select
               name='vatRatio'
               onChange={this.handleChange}
               value={this.state.vatRatio}
-              labelWidth={86}
+              labelWidth={90}
               >
                 <MenuItem value={0}>0%</MenuItem>
                 <MenuItem value={5}>5%</MenuItem>
@@ -135,21 +137,22 @@ class App extends Component {
                 <MenuItem value={19}>{`Stawka liniowa (19%)`}</MenuItem>
               </Select>
             </FormControl>
-            <Tooltip title={
+            <Tooltip
+            title={
             <React.Fragment>
               <Typography>Wybór formy opodatkowania</Typography>
-              <p>Progresywna skala podatkowa</p>
-              <p>Opodatkowanie na zasadach ogólnych według skali podatkowej polega na opłaceniu podatku w wysokości 18% od podstawy opodatkowania nieprzekraczającej 85 528 zł oraz według stawki 32% od nadwyżki ponad 85 528 zł. Warto zaznaczyć, że w przypadku podatku obliczanego według skali, podstawę opodatkowania można obniżyć o kwotę wolną o podatku wynoszącą 556,02 zł.
+              <br/>
+              Progresywna skala podatkowa
+              Opodatkowanie na zasadach ogólnych według skali podatkowej polega na opłaceniu podatku w wysokości 18% od podstawy opodatkowania nieprzekraczającej 85 528 zł oraz według stawki 32% od nadwyżki ponad 85 528 zł. Warto zaznaczyć, że w przypadku podatku obliczanego według skali, podstawę opodatkowania można obniżyć o kwotę wolną o podatku wynoszącą 556,02 zł.<br/><br/>
                 
-              <p>Skala I</p>
-              <p>18% od podstawy opodatkowania nieprzekraczającej 85 528 zł.</p>
+              Skala I<Divider/>
+              18% od podstawy opodatkowania nieprzekraczającej 85 528 zł.<br/><br/>
               
-              <p>Skala II</p>
-              <p>32% od nadwyżki ponad 85 528 zł.</p>
-              
+              Skala II<Divider/>
+              32% od nadwyżki ponad 85 528 zł.<br/><br/>
               
               Podatek liniowy
-              OpisPodczas opodatkowania podatkiem liniowym podatek opłaca się według stałej stawki 19% bez względu na wysokość osiąganego dochodu. Rozliczając się podatkiem liniowym tracimy możliwość skorzystania z ulg podatkowych oraz uwzględnienia kwoty wolnej od podatku.</p>
+              OpisPodczas opodatkowania podatkiem liniowym podatek opłaca się według stałej stawki 19% bez względu na wysokość osiąganego dochodu. Rozliczając się podatkiem liniowym tracimy możliwość skorzystania z ulg podatkowych oraz uwzględnienia kwoty wolnej od podatku.
             </React.Fragment>
             }
             placement='right'
@@ -161,7 +164,9 @@ class App extends Component {
           <div className='align bt'>
             <React.Fragment>
               <div className="align">
-              <Switch color='primary'
+              <Switch
+              color='primary'
+              disabled={vatType === 19 ? true : false}
               onChange={this.handleSwitch}
               name='isTaxFree' />
               <Typography>Uwzględnij kwotę wolną od podatku</Typography>
@@ -194,7 +199,7 @@ class App extends Component {
                 </div>
                 <Tooltip title={
               <React.Fragment>
-                <Typography>Preferencyjna składka ZUS - Obniżona</Typography>
+                <Typography>Preferencyjna składka ZUS</Typography>
                 <p>Osoby podejmujące działalność gospodarczą po raz pierwszy od 5 lat mają prawo do ograniczenia wysokości swoich składek ZUS w okresie pierwszych 24 miesięcy kalendarzowych od dnia rozpoczęcia wykonywania działalności gospodarczej.</p>
               </React.Fragment>
               }
@@ -208,6 +213,7 @@ class App extends Component {
               <React.Fragment>
                 <div className="align">
                 <Switch color='primary'
+                checked={isSickness}
                 onChange={this.handleSwitch}
                 name='isSickness' />
                 <Typography>Ubezpieczenie chorobowe</Typography>
@@ -266,7 +272,7 @@ class App extends Component {
           {/* END */}
           {/* START */}
           <div className='element'>
-            <strong style={{marginBottom: 20}} >Podsumowanie</strong>
+            <strong style={{marginBottom: 20}}>Podsumowanie</strong>
 
             {/* ELEMENT START */}
               <div className='align bt'>
@@ -274,8 +280,8 @@ class App extends Component {
                   <MonetizationOnRoundedIcon fontSize='large' />
                   <Typography style={{marginLeft: 10}}>Na ręke</Typography>
                 </div>
-                <div className='right'>
-                  <Typography variant='h5' style={{color: 'green'}}>3000</Typography>
+                <div className='right green'>
+                  <Typography variant='h5'>{onHand < 0 ? 'Zmień pracę!' : (onHand).toFixed(2)}</Typography>
                   <Typography style={{marginLeft: 6}} >zł</Typography>
                 </div>
               </div>
@@ -287,9 +293,9 @@ class App extends Component {
                   <MoneyOffRoundedIcon fontSize='large' />
                   <Typography style={{marginLeft: 10}}>Podatek VAT</Typography>
                 </div>
-                <div className='right'>
-                  <Typography variant='h5' style={{color: 'red'}}>-650</Typography>
-                  <Typography style={{marginLeft: 6, color: 'red'}} >zł</Typography>
+                <div className='right red'>
+                  <Typography variant='h5'>{(vatTax).toFixed(2)}</Typography>
+                  <Typography style={{marginLeft: 6}} >zł</Typography>
                 </div>
               </div>
               <Divider/>
@@ -300,9 +306,9 @@ class App extends Component {
                   <AccountBalanceRoundedIcon fontSize='large' />
                   <Typography style={{marginLeft: 10}}>Podatek dochodowy</Typography>
                 </div>
-                <div className='right'>
-                  <Typography variant='h5' style={{color: 'red'}}>-650</Typography>
-                  <Typography style={{marginLeft: 6, color: 'red'}} >zł</Typography>
+                <div className='right red'>
+                  <Typography variant='h5'>{(incomeTax).toFixed(2)}</Typography>
+                  <Typography style={{marginLeft: 6}} >zł</Typography>
                 </div>
               </div>
               <Divider/>
@@ -312,9 +318,9 @@ class App extends Component {
                 <div className='align'>
                   <Typography variant='overline' style={{marginLeft: 10}}>Stawka 18%</Typography>
                 </div>
-                <div className='right'>
-                  <Typography style={{color: 'red'}}>-187</Typography>
-                  <Typography style={{marginLeft: 6, color: 'red'}} >zł</Typography>
+                <div className='right red'>
+                  <Typography>{(incomeTax).toFixed(2)}</Typography>
+                  <Typography style={{marginLeft: 6}} >zł</Typography>
                 </div>
               </div>
               <Divider/>
@@ -324,9 +330,9 @@ class App extends Component {
                 <div className='align'>
                   <Typography variant='overline' style={{marginLeft: 10}}>Stawka 32%</Typography>
                 </div>
-                <div className='right'>
-                  <Typography style={{color: 'red'}}>-230</Typography>
-                  <Typography style={{marginLeft: 6, color: 'red'}} >zł</Typography>
+                <div className='right red'>
+                  <Typography>0</Typography>
+                  <Typography style={{marginLeft: 6}} >zł</Typography>
                 </div>
               </div>
               <Divider/>
@@ -337,9 +343,9 @@ class App extends Component {
                   <LocalAtmIcon fontSize='large' />
                   <Typography style={{marginLeft: 10}}>Składki do ZUS</Typography>
                 </div>
-                <div className='right'>
-                  <Typography variant='h5' style={{color: 'red'}}>{(contributons).toFixed(2)}</Typography>
-                  <Typography style={{marginLeft: 6, color: 'red'}} >zł</Typography>
+                <div className='right red'>
+                  <Typography variant='h5'>{(contributons).toFixed(2)}</Typography>
+                  <Typography style={{marginLeft: 6}} >zł</Typography>
                 </div>
               </div>
               <Divider/>
@@ -349,9 +355,9 @@ class App extends Component {
                 <div className='align'>
                   <Typography variant='overline' style={{marginLeft: 10}}>Składka społeczna</Typography>
                 </div>
-                <div className='right'>
-                  <Typography style={{color: 'red'}}>{(social).toFixed(2)}</Typography>
-                  <Typography style={{marginLeft: 6, color: 'red'}} >zł</Typography>
+                <div className='right red'>
+                  <Typography>{(social).toFixed(2)}</Typography>
+                  <Typography style={{marginLeft: 6}} >zł</Typography>
                 </div>
               </div>
               <Divider/>
@@ -361,9 +367,9 @@ class App extends Component {
                 <div className='align'>
                   <Typography variant='overline' style={{marginLeft: 10}}>Składka zdrowotna</Typography>
                 </div>
-                <div className='right'>
-                  <Typography style={{color: 'red'}}>{(healthCare).toFixed(2)}</Typography>
-                  <Typography style={{marginLeft: 6, color: 'red'}} >zł</Typography>
+                <div className='right red'>
+                  <Typography>{(healthCare).toFixed(2)}</Typography>
+                  <Typography style={{marginLeft: 6}} >zł</Typography>
                 </div>
               </div>
               <Divider/>
@@ -373,9 +379,9 @@ class App extends Component {
                 <div className='align'>
                   <Typography variant='overline' style={{marginLeft: 10}}>Fundusz pracy</Typography>
                 </div>
-                <div className='right'>
-                  <Typography style={{color: 'red'}}>{(labor).toFixed(2)}</Typography>
-                  <Typography style={{marginLeft: 6, color: 'red'}} >zł</Typography>
+                <div className='right red'>
+                  <Typography>{(labor).toFixed(2)}</Typography>
+                  <Typography style={{marginLeft: 6}} >zł</Typography>
                 </div>
               </div>
               <Divider/>
@@ -386,9 +392,9 @@ class App extends Component {
                   <MonetizationOnRoundedIcon fontSize='large' />
                   <Typography style={{marginLeft: 10}}>Koszty netto</Typography>
                 </div>
-                <div className='right'>
-                  <Typography variant='h5' style={{color: 'red'}}>0</Typography>
-                  <Typography style={{marginLeft: 6, color: 'red'}} >zł</Typography>
+                <div className='right red'>
+                  <Typography variant='h5'>0</Typography>
+                  <Typography style={{marginLeft: 6}} >zł</Typography>
                 </div>
               </div>
             {/* ELEMENT END */}

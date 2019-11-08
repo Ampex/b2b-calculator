@@ -93,6 +93,12 @@ body {
   display: flex;
   justify-content: flex-end;
 }
+.green {
+  color: green;
+}
+.red {
+  color: red;
+}
 .mt {
   margin-top: 15px;
 }
