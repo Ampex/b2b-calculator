@@ -27,16 +27,28 @@ class App extends Component {
     nettoValue: 60000,
     vatRatio: 23,
     vatType: 18,
-    nettoCost: '',
-    nettoDeduction: '',
+    nettoCost: 0,
+    nettoDeduction: 0,
     isTaxFree: false,
+    isTaxFreeValue: 1420,
     isDeducted: false,
     isSickness: true
   }
 
+  checkTaxFreeValue() {
+    const { nettoValue } = this.state
+
+    if (nettoValue >= 0) return 1420
+    else if (nettoValue > 8000) return 871.70 * nettoValue - 8000
+    else if (nettoValue > 13000) return 548.30
+    else if (nettoValue > 85528) return 548.30
+    else if (nettoValue > 127000) return 0
+  }
+  
   handleChange = e => {
     this.setState ({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
+      isTaxFreeValue: this.state.nettoValue <= 8000 ? 1420 : this.checkTaxFreeValue()
     })
   }
   handleSwitch = e => {
@@ -45,9 +57,12 @@ class App extends Component {
     })
   }
 
+  
+  
+
   render() {
     
-    const { nettoValue, vatRatio, vatType, isSickness, isDeducted } = this.state
+    const { nettoValue, vatRatio, vatType, isSickness, isDeducted, nettoCost } = this.state
 
     const socialRatio = isDeducted ? 675 : 2859
     const healthRatio = 3803.56
@@ -56,20 +71,21 @@ class App extends Component {
     const accidentRatio = 0.0167
     const sicknessRatio = 0.0245
     const laborRatio = 0.0245
+    const biggerTax = 85528
 
     const vatTax = vatRatio/100*nettoValue 
-
     const pension = pensionRatio*socialRatio
     const pensionDisability = pensionDisabilityRatio*socialRatio
     const accident = accidentRatio*socialRatio
-    const sickness = isSickness ? 0 : sicknessRatio*socialRatio
+    const sickness = isSickness ? sicknessRatio*socialRatio : 0
     const labor = isDeducted ? 0 : laborRatio*socialRatio
     const healthCare = 0.09*healthRatio
 
     const social = pension + pensionDisability + accident + sickness
     const contributons = social + labor + healthCare
-    const incomeTax = nettoValue * 0.18 - healthCare
-    const onHand = nettoValue - vatTax - incomeTax
+    const incomeTax = nettoValue * 0.1775
+    const onHand = nettoValue - nettoCost - vatTax - incomeTax - contributons
+    const allNettoCosts = nettoCost
 
     return (
       <ThemeProvider theme={theme} >
@@ -244,6 +260,7 @@ class App extends Component {
               label='Koszty netto'
               variant='outlined'
               color='primary'
+              inputProps={{ min: 0}}
               onChange={this.handleChange}
               value={this.state.nettoCost}
               />
@@ -392,8 +409,8 @@ class App extends Component {
                   <MonetizationOnRoundedIcon fontSize='large' />
                   <Typography style={{marginLeft: 10}}>Koszty netto</Typography>
                 </div>
-                <div className='right red'>
-                  <Typography variant='h5'>0</Typography>
+                <div className='right orange'>
+                  <Typography variant='h5'>{allNettoCosts === '' ? 0 : allNettoCosts}</Typography>
                   <Typography style={{marginLeft: 6}} >zł</Typography>
                 </div>
               </div>

@@ -94,10 +94,13 @@ body {
   justify-content: flex-end;
 }
 .green {
-  color: green;
+  color: green
+}
+.orange {
+  color: orange
 }
 .red {
-  color: red;
+  color: red
 }
 .mt {
   margin-top: 15px;
