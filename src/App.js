@@ -7,6 +7,7 @@ import MonetizationOnRoundedIcon from '@material-ui/icons/MonetizationOnRounded'
 import MoneyOffRoundedIcon from '@material-ui/icons/MoneyOffRounded'
 import AccountBalanceRoundedIcon from '@material-ui/icons/AccountBalanceRounded'
 import LocalAtmIcon from '@material-ui/icons/LocalAtm'
+import { binaryExpression } from '@babel/types';
 
 const theme = createMuiTheme ({
   overrides: {
@@ -24,45 +25,51 @@ const theme = createMuiTheme ({
 class App extends Component {
 
   state = {
-    nettoValue: 60000,
+    nettoValue: 9450,
     vatRatio: 23,
     vatType: 18,
     nettoCost: 0,
     nettoDeduction: 0,
     isTaxFree: false,
-    isTaxFreeValue: 1420,
+    isTaxFreeValue: 0,
     isDeducted: false,
     isSickness: true
   }
 
-  checkTaxFreeValue() {
-    const { nettoValue } = this.state
-
-    if (nettoValue >= 0) return 1420
-    else if (nettoValue > 8000) return 871.70 * nettoValue - 8000
-    else if (nettoValue > 13000) return 548.30
-    else if (nettoValue > 85528) return 548.30
-    else if (nettoValue > 127000) return 0
+  checkTaxFreeValue = caseValue => {
+    if (caseValue <= 8000) return 1420
+    else if (caseValue > 8000 && caseValue <= 13000) {
+      return 1420 - (871.7 * (caseValue - 8000) / 5000)
+    } else if (caseValue > 13000 && caseValue <= 85528) {
+      return 548.3
+    } else if (caseValue > 85528 && caseValue <= 120000) {
+      return 548.3 - (548.3 * (caseValue - 85.528) / 41.472)
+    } else if (caseValue > 127001) {
+      return 0
+    }
   }
-  
-  handleChange = e => {
+
+  handleNetValueChange = ({ target }) => {
+    const netValue = parseInt(target.value)
     this.setState ({
-      [e.target.name]: e.target.value,
-      isTaxFreeValue: this.state.nettoValue <= 8000 ? 1420 : this.checkTaxFreeValue()
+      nettoValue: netValue,
+      isTaxFreeValue: this.checkTaxFreeValue(netValue)
     })
   }
+
+  handleChange = ({ target }) => this.setState ({ 
+    [target.name]: target.value,
+  })
+
   handleSwitch = e => {
     this.setState ({
       [e.target.name]: !this.state[e.target.name]
     })
   }
 
-  
-  
-
   render() {
     
-    const { nettoValue, vatRatio, vatType, isSickness, isDeducted, nettoCost } = this.state
+    const { nettoValue, vatRatio, vatType, isSickness, isDeducted, nettoCost, isTaxFree, isTaxFreeValue } = this.state
 
     const socialRatio = isDeducted ? 675 : 2859
     const healthRatio = 3803.56
@@ -71,7 +78,6 @@ class App extends Component {
     const accidentRatio = 0.0167
     const sicknessRatio = 0.0245
     const laborRatio = 0.0245
-    const biggerTax = 85528
 
     const vatTax = vatRatio/100*nettoValue 
     const pension = pensionRatio*socialRatio
@@ -87,6 +93,10 @@ class App extends Component {
     const onHand = nettoValue - nettoCost - vatTax - incomeTax - contributons
     const allNettoCosts = nettoCost
 
+    const bigTaxThreshold = 85528
+    const tax32 = nettoValue > bigTaxThreshold ? (nettoValue - bigTaxThreshold) * 0.32 : 0    
+    console.log(tax32);
+    
     return (
       <ThemeProvider theme={theme} >
       <div className='container'>
@@ -99,14 +109,14 @@ class App extends Component {
 
           <div className='align'>
             <TextField
-            inputProps={{ maxLength: 10 }}
+            inputProps={{ maxLength: 10, min: 0 }}
             fullWidth
             type='number'
             name='nettoValue'
             label='Przychód netto'
             variant='outlined'
             color='primary'
-            onChange={this.handleChange}
+            onChange={this.handleNetValueChange}
             value={this.state.nettoValue}
             style={{marginRight: 15}}
             />
@@ -260,7 +270,7 @@ class App extends Component {
               label='Koszty netto'
               variant='outlined'
               color='primary'
-              inputProps={{ min: 0}}
+              inputProps={{ maxLength: 10, min: 0 }}
               onChange={this.handleChange}
               value={this.state.nettoCost}
               />
@@ -273,6 +283,7 @@ class App extends Component {
               label='Odliczenie VAT'
               variant='outlined'
               color='primary'
+              inputProps={{ maxLength: 10, min: 0 }}
               onChange={this.handleChange}
               value={this.state.nettoDeduction}
               />
@@ -295,7 +306,7 @@ class App extends Component {
               <div className='align bt'>
                 <div className='align'>
                   <MonetizationOnRoundedIcon fontSize='large' />
-                  <Typography style={{marginLeft: 10}}>Na ręke</Typography>
+                  <Typography style={{marginLeft: 10}}>Na czysto</Typography>
                 </div>
                 <div className='right green'>
                   <Typography variant='h5'>{onHand < 0 ? 'Zmień pracę!' : (onHand).toFixed(2)}</Typography>
@@ -348,7 +359,7 @@ class App extends Component {
                   <Typography variant='overline' style={{marginLeft: 10}}>Stawka 32%</Typography>
                 </div>
                 <div className='right red'>
-                  <Typography>0</Typography>
+            <Typography>{tax32}</Typography>
                   <Typography style={{marginLeft: 6}} >zł</Typography>
                 </div>
               </div>
