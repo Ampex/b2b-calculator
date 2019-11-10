@@ -24,13 +24,13 @@ const theme = createMuiTheme ({
 class App extends Component {
 
   state = {
-    nettoValue: 9450,
+    nettoValue: 6000,
     vatRatio: 23,
-    vatType: 18,
+    vatType: 17.75,
     nettoCost: '',
     nettoDeduction: '',
-    isTaxFree: false,
-    isTaxFreeValue: 0,
+    isTaxFree: true,
+    isTaxFreeValue: 1420,
     isDeducted: false,
     isSickness: true
   }
@@ -56,9 +56,20 @@ class App extends Component {
     })
   }
 
-  handleChange = ({ target }) => this.setState ({ 
-    [target.name]: target.value,
-  })
+  handleChange = ({ target }) => {
+    const { vatType, isTaxFree } = this.state
+    if (vatType === 18) {
+      this.setState ({
+        [target.name]: target.value
+      })
+    } else {
+      this.setState ({
+        [target.name]: target.value,
+        isTaxFree: false
+      })
+    }
+  }
+    
 
   handleSwitch = e => {
     this.setState ({
@@ -91,16 +102,15 @@ class App extends Component {
     const allNettoCosts = nettoCost
 
     const bigTaxThreshold = 85528
-    const tax18 = nettoValue <= bigTaxThreshold ? nettoValue * 0.1775 : bigTaxThreshold * 0.1775
+    const tax18 = nettoValue <= bigTaxThreshold ? nettoValue * (vatType/100) : bigTaxThreshold * 0.1775
     const tax32 = nettoValue > bigTaxThreshold ? (nettoValue - bigTaxThreshold) * 0.32 : 0    
-    const incomeTax = tax18 + tax32 - 0
+    const incomeTax = (tax18 + tax32) - (isTaxFree ? isTaxFreeValue : 0)
     const onHand = nettoValue - nettoCost - vatTax - incomeTax - contributons
-
 
     return (
       <ThemeProvider theme={theme} >
       <div className='container'>
-        <h2>Kalkulator wynagrodzenia B2B</h2>
+        <h2>Miesięczny kalkulator wynagrodzenia B2B</h2>
         <div className="content">
 
           {/* START */}
@@ -156,11 +166,11 @@ class App extends Component {
               name='vatType'
               onChange={this.handleChange}
               value={this.state.vatType}
-              labelWidth={188}
+              labelWidth={186}
               style={{marginRight: 15}}
               >
-                <MenuItem value={18}>{`Stawka progresywna (18%/32%)`}</MenuItem>
-                <MenuItem value={19}>{`Stawka liniowa (19%)`}</MenuItem>
+                <MenuItem value={17.75}>{`Stawka progresywna ( 17,75% / 32% )`}</MenuItem>
+                <MenuItem value={19}>{`Stawka liniowa ( 19% )`}</MenuItem>
               </Select>
             </FormControl>
             <Tooltip
@@ -191,6 +201,7 @@ class App extends Component {
             <React.Fragment>
               <div className="align">
               <Switch
+              checked={isTaxFree}
               color='primary'
               disabled={vatType === 19 ? true : false}
               onChange={this.handleSwitch}
@@ -335,7 +346,7 @@ class App extends Component {
                   <Typography style={{marginLeft: 10}}>Podatek dochodowy</Typography>
                 </div>
                 <div className='right red'>
-                  <Typography variant='h5'>{(incomeTax).toFixed(2)}</Typography>
+                  <Typography variant='h5'>{incomeTax > 0 ? (incomeTax).toFixed(2) : '0.00' }</Typography>
                   <Typography style={{marginLeft: 6}} >zł</Typography>
                 </div>
               </div>
@@ -347,7 +358,7 @@ class App extends Component {
                   <Typography variant='overline' style={{marginLeft: 10}}>Stawka 18%</Typography>
                 </div>
                 <div className='right red'>
-                  <Typography>{(tax18).toFixed(2)}</Typography>
+                  <Typography>{isTaxFree ? '0.00' : (tax18).toFixed(2)}</Typography>
                   <Typography style={{marginLeft: 6}} >zł</Typography>
                 </div>
               </div>

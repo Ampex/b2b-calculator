@@ -78,7 +78,6 @@ body {
 .element {
   display: flex;
   flex-direction: column;
-  width: auto;
   padding: 25px;
 }
 .element > * {
