@@ -7,7 +7,6 @@ import MonetizationOnRoundedIcon from '@material-ui/icons/MonetizationOnRounded'
 import MoneyOffRoundedIcon from '@material-ui/icons/MoneyOffRounded'
 import AccountBalanceRoundedIcon from '@material-ui/icons/AccountBalanceRounded'
 import LocalAtmIcon from '@material-ui/icons/LocalAtm'
-import { binaryExpression } from '@babel/types';
 
 const theme = createMuiTheme ({
   overrides: {
@@ -28,8 +27,8 @@ class App extends Component {
     nettoValue: 9450,
     vatRatio: 23,
     vatType: 18,
-    nettoCost: 0,
-    nettoDeduction: 0,
+    nettoCost: '',
+    nettoDeduction: '',
     isTaxFree: false,
     isTaxFreeValue: 0,
     isDeducted: false,
@@ -42,11 +41,11 @@ class App extends Component {
       return 1420 - (871.7 * (caseValue - 8000) / 5000)
     } else if (caseValue > 13000 && caseValue <= 85528) {
       return 548.3
-    } else if (caseValue > 85528 && caseValue <= 120000) {
-      return 548.3 - (548.3 * (caseValue - 85.528) / 41.472)
+    } else if (caseValue > 85528 && caseValue <= 127000) {
+      return 548.3 - (548.3 * (caseValue - 85528) / 41472)
     } else if (caseValue > 127001) {
       return 0
-    }
+    }    
   }
 
   handleNetValueChange = ({ target }) => {
@@ -89,14 +88,15 @@ class App extends Component {
 
     const social = pension + pensionDisability + accident + sickness
     const contributons = social + labor + healthCare
-    const incomeTax = nettoValue * 0.1775
-    const onHand = nettoValue - nettoCost - vatTax - incomeTax - contributons
     const allNettoCosts = nettoCost
 
     const bigTaxThreshold = 85528
+    const tax18 = nettoValue <= bigTaxThreshold ? nettoValue * 0.1775 : bigTaxThreshold * 0.1775
     const tax32 = nettoValue > bigTaxThreshold ? (nettoValue - bigTaxThreshold) * 0.32 : 0    
-    console.log(tax32);
-    
+    const incomeTax = tax18 + tax32 - 0
+    const onHand = nettoValue - nettoCost - vatTax - incomeTax - contributons
+
+
     return (
       <ThemeProvider theme={theme} >
       <div className='container'>
@@ -347,7 +347,7 @@ class App extends Component {
                   <Typography variant='overline' style={{marginLeft: 10}}>Stawka 18%</Typography>
                 </div>
                 <div className='right red'>
-                  <Typography>{(incomeTax).toFixed(2)}</Typography>
+                  <Typography>{(tax18).toFixed(2)}</Typography>
                   <Typography style={{marginLeft: 6}} >zł</Typography>
                 </div>
               </div>
@@ -359,7 +359,7 @@ class App extends Component {
                   <Typography variant='overline' style={{marginLeft: 10}}>Stawka 32%</Typography>
                 </div>
                 <div className='right red'>
-            <Typography>{tax32}</Typography>
+                  <Typography>{(tax32).toFixed(2)}</Typography>
                   <Typography style={{marginLeft: 6}} >zł</Typography>
                 </div>
               </div>
