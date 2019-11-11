@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import './App.css'
-import { Select, Divider, Button, Switch, Tooltip, TextField, Typography, MenuItem, FormControl, InputLabel } from '@material-ui/core'
+import { Dialog, Select, Divider, Button, Switch, Tooltip, TextField, Typography, MenuItem, FormControl, InputLabel, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@material-ui/core'
 import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles'
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline'
 import MonetizationOnRoundedIcon from '@material-ui/icons/MonetizationOnRounded'
 import MoneyOffRoundedIcon from '@material-ui/icons/MoneyOffRounded'
 import AccountBalanceRoundedIcon from '@material-ui/icons/AccountBalanceRounded'
 import LocalAtmIcon from '@material-ui/icons/LocalAtm'
+import AddIcon from '@material-ui/icons/Add';
 
 const theme = createMuiTheme ({
   overrides: {
@@ -27,12 +28,13 @@ class App extends Component {
     nettoValue: 6000,
     vatRatio: 23,
     vatType: 17.75,
-    nettoCost: 0,
-    nettoDeduction: 0,
+    nettoCost: '',
+    nettoDeduction: '',
     isTaxFree: true,
     isTaxFreeValue: 1420,
     isDeducted: false,
-    isSickness: true
+    isSickness: true,
+    isDialogOpen: false
   }
 
   checkTaxFreeValue = caseValue => {
@@ -57,19 +59,30 @@ class App extends Component {
   }
 
   handleChange = ({ target }) => {
-    const { vatType } = this.state
-    if (vatType === 18) {
+    const netValue = parseInt(target.value)
+    if (this.state.vatType === 18) {
       this.setState ({
-        [target.name]: target.value
+        [target.name]: netValue
       })
     } else {
       this.setState ({
-        [target.name]: target.value,
+        [target.name]: netValue,
         isTaxFree: false
       })
     }
   }
-    
+  handleCostAdd = ({ target }) => {
+    const value = parseInt(target.value)
+    this.setState ({
+      [target.name]: value > 0 ? value : ''
+    })
+  }
+  
+  handleClick = () => {
+    this.setState ({
+      isDialogOpen: !this.state.isDialogOpen
+    })
+  }
 
   handleSwitch = e => {
     this.setState ({
@@ -81,7 +94,8 @@ class App extends Component {
     
     const { nettoValue, vatRatio, nettoDeduction, vatType, isSickness, isDeducted, nettoCost, isTaxFree, isTaxFreeValue } = this.state
 
-    const isNettoDeducted = nettoValue - nettoCost - nettoDeduction
+    const isNettoDeducted = nettoValue - nettoCost
+    
     const socialRatio = isDeducted ? 675 : 2859
     const healthRatio = 3803.56
     const pensionRatio = 0.1952
@@ -90,7 +104,7 @@ class App extends Component {
     const sicknessRatio = 0.0245
     const laborRatio = 0.0245
 
-    const vatTax = vatRatio/100*isNettoDeducted 
+    const vatTax = (vatRatio/100*isNettoDeducted) - nettoDeduction
     const pension = pensionRatio*socialRatio
     const pensionDisability = pensionDisabilityRatio*socialRatio
     const accident = accidentRatio*socialRatio
@@ -100,7 +114,6 @@ class App extends Component {
 
     const social = pension + pensionDisability + accident + sickness
     const contributons = social + labor + healthCare
-    const allNettoCosts = nettoCost
 
     const bigTaxThreshold = 85528
     const tax18Calc = isNettoDeducted <= bigTaxThreshold ? isNettoDeducted * (vatType/100) : bigTaxThreshold * 0.1775
@@ -286,8 +299,12 @@ class App extends Component {
               label='Koszty netto'
               variant='outlined'
               color='primary'
-              inputProps={{ maxLength: 10, min: 0 }}
-              onChange={this.handleChange}
+              InputProps={{
+                maxLength: 10,
+                min: 0
+              }}
+              inputProps={{ maxLength: 0, min: 0 }}
+              onChange={this.handleCostAdd}
               value={this.state.nettoCost}
               />
             </div>
@@ -299,8 +316,8 @@ class App extends Component {
               label='Odliczenie VAT'
               variant='outlined'
               color='primary'
-              inputProps={{ maxLength: 10, min: 0 }}
-              onChange={this.handleChange}
+              inputProps={{ maxLength: 0, min: 0 }}
+              onChange={this.handleCostAdd}
               value={this.state.nettoDeduction}
               />
             </div>
@@ -309,8 +326,8 @@ class App extends Component {
               fullWidth
               variant='contained'
               color='primary'
-              // onClick={this.handleClick}
-              >Dodaj koszt</Button>
+              onClick={this.handleClick}
+              ><AddIcon />Dodaj koszt</Button>
             </div>
           </div>
           {/* END */}
@@ -456,13 +473,62 @@ class App extends Component {
                   <Typography style={{marginLeft: 10}}>Koszty netto</Typography>
                 </div>
                 <div className='right orange'>
-                  <Typography variant='h5'>{allNettoCosts === '' ? 0 : allNettoCosts}</Typography>
+                  <Typography variant='h5'>{nettoCost ? nettoCost : '0.00'}</Typography>
                   <Typography style={{marginLeft: 6}} >zł</Typography>
                 </div>
               </div>
             {/* ELEMENT END */}
           </div>
           {/* END */}
+          <Dialog open={this.state.isDialogOpen}>
+            <DialogTitle>Dodaj koszt</DialogTitle>
+            <DialogContent>
+              <div className='dialog'>
+
+                <TextField
+                fullWidth
+                name='nettoCost'
+                label='Koszty netto'
+                variant='outlined'
+                color='primary'
+                inputProps={{ maxLength: 7, min: 0}}
+                onChange={e => this.setState ({ nettoCost: e.target.value, bruttoCost: nettoCost * 1.23 })}
+                value={this.state.nettoCost}
+                />
+
+                <FormControl style={{marginRight: 40}} variant='outlined' fullWidth>
+                  <InputLabel>Stawka VAT</InputLabel>
+                  <Select
+                  name='calcVatRatio'
+                  onChange={this.handlecalcVatRatio}
+                  value={this.state.calcVatRatio}
+                  labelWidth={90}
+                  >
+                    <MenuItem value={0}>0%</MenuItem>
+                    <MenuItem value={5}>5%</MenuItem>
+                    <MenuItem value={8}>8%</MenuItem>
+                    <MenuItem value={23}>23%</MenuItem>
+                  </Select>
+                </FormControl>
+
+                <TextField
+                fullWidth
+                name='nettoCost'
+                label='Koszty brutto'
+                variant='outlined'
+                color='primary'
+                inputProps={{ maxLength: 7, min: 0}}
+                // onChange={e => this.setState ({ bruttoCost: nettoCost * 1.23 })}
+                value={this.state.bruttoCost}
+                />
+
+              </div>
+              <DialogActions>
+                <Button onClick={this.handleClick} color='primary' >Dodaj</Button>
+              </DialogActions>
+
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
       </ThemeProvider>

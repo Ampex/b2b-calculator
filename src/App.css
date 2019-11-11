@@ -84,7 +84,13 @@ body {
 .element > * {
   margin-bottom: 15px;
 }
-
+.dialog {
+  display: flex;
+  flex-direction: column;
+}
+.dialog > * {
+  margin-bottom: 15px !important;
+}
 .align {
   display: flex;
   align-items: center;
