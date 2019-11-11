@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import './App.css'
-import { Dialog, Select, Divider, Button, Switch, Tooltip, TextField, Typography, MenuItem, FormControl, InputLabel, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@material-ui/core'
+import { Select, Divider, Link, Switch, Tooltip, TextField, Typography, MenuItem, FormControl, InputLabel } from '@material-ui/core'
 import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles'
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline'
 import MonetizationOnRoundedIcon from '@material-ui/icons/MonetizationOnRounded'
 import MoneyOffRoundedIcon from '@material-ui/icons/MoneyOffRounded'
 import AccountBalanceRoundedIcon from '@material-ui/icons/AccountBalanceRounded'
 import LocalAtmIcon from '@material-ui/icons/LocalAtm'
-import AddIcon from '@material-ui/icons/Add';
 
 const theme = createMuiTheme ({
   overrides: {
@@ -123,12 +122,13 @@ class App extends Component {
     const tax19 = isNettoDeducted * 0.19
     const tax32 = isNettoDeducted > bigTaxThreshold ? (isNettoDeducted - bigTaxThreshold) * 0.32 : 0    
     const incomeTax = vatType === 19 ? tax19 : tax18 + tax32
-    const onHand = isNettoDeducted - nettoCost - (incomeTax < 0 ? 0 : incomeTax) - contributons
+    const onHand = isNettoDeducted - vatTax - nettoCost - (incomeTax < 0 ? 0 : incomeTax) - contributons
 
     return (
       <ThemeProvider theme={theme} >
+      <h1 style={{textAlign: 'center'}} >Kalkulator wynagrodzenia B2B</h1>
       <div className='container'>
-        <h2>Miesięczny kalkulator wynagrodzenia B2B</h2>
+        
         <div className="content">
 
           {/* START */}
@@ -187,8 +187,8 @@ class App extends Component {
               labelWidth={186}
               style={{marginRight: 15}}
               >
-                <MenuItem value={17.75}>{`Stawka progresywna ( 17,75% / 32% )`}</MenuItem>
-                <MenuItem value={19}>{`Stawka liniowa ( 19% )`}</MenuItem>
+                <MenuItem value={17.75}>{`Stawka progresywna - 17,75%/32%`}</MenuItem>
+                <MenuItem value={19}>{`Stawka liniowa - 19%`}</MenuItem>
               </Select>
             </FormControl>
             <Tooltip
@@ -320,14 +320,6 @@ class App extends Component {
               onChange={this.handleCostAdd}
               value={this.state.nettoDeduction}
               />
-            </div>
-            <div className='align'>
-              <Button
-              fullWidth
-              variant='contained'
-              color='primary'
-              onClick={this.handleClick}
-              ><AddIcon />Dodaj koszt</Button>
             </div>
           </div>
           {/* END */}
@@ -480,57 +472,10 @@ class App extends Component {
             {/* ELEMENT END */}
           </div>
           {/* END */}
-          <Dialog open={this.state.isDialogOpen}>
-            <DialogTitle>Dodaj koszt</DialogTitle>
-            <DialogContent>
-              <div className='dialog'>
-
-                <TextField
-                fullWidth
-                name='nettoCost'
-                label='Koszty netto'
-                variant='outlined'
-                color='primary'
-                inputProps={{ maxLength: 7, min: 0}}
-                onChange={e => this.setState ({ nettoCost: e.target.value, bruttoCost: nettoCost * 1.23 })}
-                value={this.state.nettoCost}
-                />
-
-                <FormControl style={{marginRight: 40}} variant='outlined' fullWidth>
-                  <InputLabel>Stawka VAT</InputLabel>
-                  <Select
-                  name='calcVatRatio'
-                  onChange={this.handlecalcVatRatio}
-                  value={this.state.calcVatRatio}
-                  labelWidth={90}
-                  >
-                    <MenuItem value={0}>0%</MenuItem>
-                    <MenuItem value={5}>5%</MenuItem>
-                    <MenuItem value={8}>8%</MenuItem>
-                    <MenuItem value={23}>23%</MenuItem>
-                  </Select>
-                </FormControl>
-
-                <TextField
-                fullWidth
-                name='nettoCost'
-                label='Koszty brutto'
-                variant='outlined'
-                color='primary'
-                inputProps={{ maxLength: 7, min: 0}}
-                // onChange={e => this.setState ({ bruttoCost: nettoCost * 1.23 })}
-                value={this.state.bruttoCost}
-                />
-
-              </div>
-              <DialogActions>
-                <Button onClick={this.handleClick} color='primary' >Dodaj</Button>
-              </DialogActions>
-
-            </DialogContent>
-          </Dialog>
         </div>
       </div>
+      <h5 style={{textAlign: 'center'}} >© 2019 by <Link href='mailto:kasperski.blazej@gmail.com'>bkasperski</Link></h5>
+      
       </ThemeProvider>
     )
   }

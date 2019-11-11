@@ -33,12 +33,13 @@
     .element {
       background-color: none !important;
       box-shadow: none !important;
+      width: auto !important;
     }
     h2 {
       background-color: #eee;
       font-size: 20px;
       width: 100%;
-      height: 10vh;
+      height: 8.5vh;
       margin: 0;
       padding-top: 35px;
       text-align: center;
@@ -46,10 +47,10 @@
 }
 
 body {
-  background-color: #eee;
-  /* background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25' viewBox='0 0 1600 800'%3E%3Cg stroke='%23ffffff' stroke-width='66.7' stroke-opacity='0.06' %3E%3Ccircle fill='%23ffffff' cx='0' cy='0' r='1800'/%3E%3Ccircle fill='%23f6f7fa' cx='0' cy='0' r='1700'/%3E%3Ccircle fill='%23edf0f6' cx='0' cy='0' r='1600'/%3E%3Ccircle fill='%23e4e9f1' cx='0' cy='0' r='1500'/%3E%3Ccircle fill='%23dbe1ed' cx='0' cy='0' r='1400'/%3E%3Ccircle fill='%23d2dae8' cx='0' cy='0' r='1300'/%3E%3Ccircle fill='%23c9d3e4' cx='0' cy='0' r='1200'/%3E%3Ccircle fill='%23c0cbdf' cx='0' cy='0' r='1100'/%3E%3Ccircle fill='%23b7c4db' cx='0' cy='0' r='1000'/%3E%3Ccircle fill='%23aebdd6' cx='0' cy='0' r='900'/%3E%3Ccircle fill='%23a5b6d2' cx='0' cy='0' r='800'/%3E%3Ccircle fill='%239cafce' cx='0' cy='0' r='700'/%3E%3Ccircle fill='%2393a8c9' cx='0' cy='0' r='600'/%3E%3Ccircle fill='%238aa1c5' cx='0' cy='0' r='500'/%3E%3Ccircle fill='%23809ac0' cx='0' cy='0' r='400'/%3E%3Ccircle fill='%237793bc' cx='0' cy='0' r='300'/%3E%3Ccircle fill='%236e8db7' cx='0' cy='0' r='200'/%3E%3Ccircle fill='%236486b3' cx='0' cy='0' r='100'/%3E%3C/g%3E%3C/svg%3E");
+  background-color: #ffffff;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25' viewBox='0 0 1000 1000'%3E%3Cdefs%3E%3CradialGradient id='a' cx='500' cy='500' r='60%25' gradientUnits='userSpaceOnUse'%3E%3Cstop offset='0' stop-color='%23ffffff'/%3E%3Cstop offset='1' stop-color='%23ebebeb'/%3E%3C/radialGradient%3E%3CradialGradient id='b' cx='500' cy='500' r='70%25' gradientUnits='userSpaceOnUse'%3E%3Cstop offset='0' stop-color='%23ffffff' stop-opacity='1'/%3E%3Cstop offset='1' stop-color='%23ffffff' stop-opacity='0'/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect fill='url(%23a)' width='1000' height='1000'/%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='2' stroke-miterlimit='10' stroke-opacity='.5'%3E%3Ccircle cx='500' cy='500' r='725'/%3E%3Ccircle cx='500' cy='500' r='700'/%3E%3Ccircle cx='500' cy='500' r='675'/%3E%3Ccircle cx='500' cy='500' r='650'/%3E%3Ccircle cx='500' cy='500' r='625'/%3E%3Ccircle cx='500' cy='500' r='600'/%3E%3Ccircle cx='500' cy='500' r='575'/%3E%3Ccircle cx='500' cy='500' r='550'/%3E%3Ccircle cx='500' cy='500' r='525'/%3E%3Ccircle cx='500' cy='500' r='500'/%3E%3Ccircle cx='500' cy='500' r='475'/%3E%3Ccircle cx='500' cy='500' r='450'/%3E%3Ccircle cx='500' cy='500' r='425'/%3E%3Ccircle cx='500' cy='500' r='400'/%3E%3Ccircle cx='500' cy='500' r='375'/%3E%3Ccircle cx='500' cy='500' r='350'/%3E%3Ccircle cx='500' cy='500' r='325'/%3E%3Ccircle cx='500' cy='500' r='300'/%3E%3Ccircle cx='500' cy='500' r='275'/%3E%3Ccircle cx='500' cy='500' r='250'/%3E%3Ccircle cx='500' cy='500' r='225'/%3E%3Ccircle cx='500' cy='500' r='200'/%3E%3Ccircle cx='500' cy='500' r='175'/%3E%3Ccircle cx='500' cy='500' r='150'/%3E%3Ccircle cx='500' cy='500' r='125'/%3E%3Ccircle cx='500' cy='500' r='100'/%3E%3Ccircle cx='500' cy='500' r='75'/%3E%3Ccircle cx='500' cy='500' r='50'/%3E%3Ccircle cx='500' cy='500' r='25'/%3E%3C/g%3E%3Crect fill-opacity='.5' fill='url(%23b)' width='1000' height='1000'/%3E %3C/svg%3E");
   background-attachment: fixed;
-  background-size: cover; */
+  background-size: cover;
   color: #222;
   margin: 0;
   padding: 0;
@@ -69,7 +70,7 @@ body {
   box-shadow: var(--shadow);
 }
 .content {
-  height: 850px;
+  height: 800px;
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
