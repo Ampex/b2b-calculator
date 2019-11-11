@@ -1,12 +1,10 @@
-Numerology app.
+Aplikacja kalkulatora rozliczeń B2B
 
-# Live demo here: [DEMO](https://bkasperski.pl/numerology)
+# Demo na żywo tutaj: [DEMO](https://bkasperski.pl/b2b)
 
-## Material UI for React
-### Components:
-- Button
-- Grow
-- ValidatorForm
-- TextValidator
+## Material UI dla React
+### Użyte komponenty:
 
-Hope you like it! Thanks!
+Select, Divider, Link, Switch, Tooltip, TextField, Typography, MenuItem, FormControl, InputLabel, ThemeProvider, createMuiTheme
+
+Podaruj gwiazdję jak się podoba ;)
