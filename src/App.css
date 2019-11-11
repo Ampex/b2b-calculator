@@ -79,6 +79,7 @@ body {
   display: flex;
   flex-direction: column;
   padding: 25px;
+  width: 44.44%;
 }
 .element > * {
   margin-bottom: 15px;

@@ -27,8 +27,8 @@ class App extends Component {
     nettoValue: 6000,
     vatRatio: 23,
     vatType: 17.75,
-    nettoCost: '',
-    nettoDeduction: '',
+    nettoCost: 0,
+    nettoDeduction: 0,
     isTaxFree: true,
     isTaxFreeValue: 1420,
     isDeducted: false,
@@ -57,7 +57,7 @@ class App extends Component {
   }
 
   handleChange = ({ target }) => {
-    const { vatType, isTaxFree } = this.state
+    const { vatType } = this.state
     if (vatType === 18) {
       this.setState ({
         [target.name]: target.value
@@ -79,8 +79,9 @@ class App extends Component {
 
   render() {
     
-    const { nettoValue, vatRatio, vatType, isSickness, isDeducted, nettoCost, isTaxFree, isTaxFreeValue } = this.state
+    const { nettoValue, vatRatio, nettoDeduction, vatType, isSickness, isDeducted, nettoCost, isTaxFree, isTaxFreeValue } = this.state
 
+    const isNettoDeducted = nettoValue - nettoCost - nettoDeduction
     const socialRatio = isDeducted ? 675 : 2859
     const healthRatio = 3803.56
     const pensionRatio = 0.1952
@@ -89,7 +90,7 @@ class App extends Component {
     const sicknessRatio = 0.0245
     const laborRatio = 0.0245
 
-    const vatTax = vatRatio/100*nettoValue 
+    const vatTax = vatRatio/100*isNettoDeducted 
     const pension = pensionRatio*socialRatio
     const pensionDisability = pensionDisabilityRatio*socialRatio
     const accident = accidentRatio*socialRatio
@@ -102,10 +103,11 @@ class App extends Component {
     const allNettoCosts = nettoCost
 
     const bigTaxThreshold = 85528
-    const tax18 = nettoValue <= bigTaxThreshold ? nettoValue * (vatType/100) : bigTaxThreshold * 0.1775
-    const tax32 = nettoValue > bigTaxThreshold ? (nettoValue - bigTaxThreshold) * 0.32 : 0    
-    const incomeTax = (tax18 + tax32) - (isTaxFree ? isTaxFreeValue : 0)
-    const onHand = nettoValue - nettoCost - vatTax - incomeTax - contributons
+    const tax18 = isNettoDeducted <= bigTaxThreshold ? isNettoDeducted * (vatType/100) : bigTaxThreshold * 0.1775
+    const tax19 = isNettoDeducted * 0.19
+    const tax32 = isNettoDeducted > bigTaxThreshold ? (isNettoDeducted - bigTaxThreshold) * 0.32 : 0    
+    const incomeTax = vatType === 19 ? tax19 : tax18 + tax32
+    const onHand = isNettoDeducted - nettoCost - (incomeTax < 0 ? 0 : incomeTax) - contributons
 
     return (
       <ThemeProvider theme={theme} >
@@ -352,30 +354,49 @@ class App extends Component {
               </div>
               <Divider/>
             {/* ELEMENT END */}
-            {/* ELEMENT START */}
-            <div className='align bt mt'>
-                <div className='align'>
-                  <Typography variant='overline' style={{marginLeft: 10}}>Stawka 18%</Typography>
-                </div>
-                <div className='right red'>
-                  <Typography>{isTaxFree ? '0.00' : (tax18).toFixed(2)}</Typography>
-                  <Typography style={{marginLeft: 6}} >zł</Typography>
-                </div>
-              </div>
-              <Divider/>
-            {/* ELEMENT END */}
-            {/* ELEMENT START */}
-            <div className='align bt mt'>
-                <div className='align'>
-                  <Typography variant='overline' style={{marginLeft: 10}}>Stawka 32%</Typography>
-                </div>
-                <div className='right red'>
-                  <Typography>{(tax32).toFixed(2)}</Typography>
-                  <Typography style={{marginLeft: 6}} >zł</Typography>
-                </div>
-              </div>
-              <Divider/>
-            {/* ELEMENT END */}
+                {
+                  vatType === 17.75 ?
+                  <React.Fragment>
+                    {/* ELEMENT START */}
+                <div className='align bt mt'>
+                    <div className='align'>
+                      <Typography variant='overline' style={{marginLeft: 10}}>Stawka 18%</Typography>
+                    </div>
+                    <div className='right red'>
+                      <Typography>{(tax18).toFixed(2)}</Typography>
+                      <Typography style={{marginLeft: 6}} >zł</Typography>
+                    </div>
+                  </div>
+                  <Divider/>
+                {/* ELEMENT END */}
+                {/* ELEMENT START */}
+                <div className='align bt mt'>
+                    <div className='align'>
+                      <Typography variant='overline' style={{marginLeft: 10}}>Stawka 32%</Typography>
+                    </div>
+                    <div className='right red'>
+                      <Typography>{(tax32).toFixed(2)}</Typography>
+                      <Typography style={{marginLeft: 6}} >zł</Typography>
+                    </div>
+                  </div>
+                  <Divider/>
+                {/* ELEMENT END */}
+                  </React.Fragment> :
+                  <React.Fragment>
+                    {/* ELEMENT START */}
+                <div className='align bt mt'>
+                    <div className='align'>
+                      <Typography variant='overline' style={{marginLeft: 10}}>Stawka 19%</Typography>
+                    </div>
+                    <div className='right red'>
+                      <Typography>{(tax19).toFixed(2)}</Typography>
+                      <Typography style={{marginLeft: 6}} >zł</Typography>
+                    </div>
+                  </div>
+                  <Divider/>
+                {/* ELEMENT END */}
+                  </React.Fragment>
+                }
             {/* ELEMENT START */}
             <div className='align bt mt'>
                 <div className='align'>
