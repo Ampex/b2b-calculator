@@ -103,7 +103,10 @@ class App extends Component {
     const allNettoCosts = nettoCost
 
     const bigTaxThreshold = 85528
-    const tax18 = isNettoDeducted <= bigTaxThreshold ? isNettoDeducted * (vatType/100) : bigTaxThreshold * 0.1775
+    const tax18Calc = isNettoDeducted <= bigTaxThreshold ? isNettoDeducted * (vatType/100) : bigTaxThreshold * 0.1775
+    const tax18Deducted = tax18Calc - (isTaxFree && isTaxFreeValue )
+    
+    const tax18 = tax18Deducted <= 0 ? 0 : tax18Deducted
     const tax19 = isNettoDeducted * 0.19
     const tax32 = isNettoDeducted > bigTaxThreshold ? (isNettoDeducted - bigTaxThreshold) * 0.32 : 0    
     const incomeTax = vatType === 19 ? tax19 : tax18 + tax32
