@@ -7,4 +7,4 @@ Aplikacja kalkulatora rozliczeń B2B
 
 Select, Divider, Link, Switch, Tooltip, TextField, Typography, MenuItem, FormControl, InputLabel, ThemeProvider, createMuiTheme
 
-Podaruj gwiazdję jak się podoba ;)
+Podaruj gwiazdkę jak się podoba ;)
