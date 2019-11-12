@@ -24,12 +24,12 @@ const theme = createMuiTheme ({
 class App extends Component {
 
   state = {
-    nettoValue: 6000,
+    nettoValue: 4000,
     vatRatio: 23,
-    vatType: 17.75,
+    vatType: 18,
     nettoCost: '',
     nettoDeduction: '',
-    isTaxFree: true,
+    isTaxFree: false,
     isTaxFreeValue: 1420,
     isDeducted: false,
     isSickness: true,
@@ -52,7 +52,7 @@ class App extends Component {
   handleNetValueChange = ({ target }) => {
     const netValue = parseInt(target.value)
     this.setState ({
-      nettoValue: netValue,
+      nettoValue: target.value === '' ? 0 : netValue,
       isTaxFreeValue: this.checkTaxFreeValue(netValue)
     })
   }
@@ -93,8 +93,7 @@ class App extends Component {
     
     const { nettoValue, vatRatio, nettoDeduction, vatType, isSickness, isDeducted, nettoCost, isTaxFree, isTaxFreeValue } = this.state
 
-    const nettoWithVAT = nettoValue + (nettoValue*1.23)
-    const isNettoDeducted = nettoValue - nettoCost
+    const isNettoDeducted = nettoValue - nettoCost - (isTaxFree && isTaxFreeValue )
 
     const socialRatio = isDeducted ? 675 : 2859
     const healthRatio = 3803.56
@@ -116,14 +115,14 @@ class App extends Component {
 
     const bigTaxThreshold = 85528
 
-    const tax18Calc = isNettoDeducted <= bigTaxThreshold ? isNettoDeducted * (vatType/100) : bigTaxThreshold * 0.1775
-    const tax18Deducted = tax18Calc - (isTaxFree && isTaxFreeValue )    
-    const tax18 = tax18Deducted <= 0 ? 0 : tax18Deducted
+    const tax18Calc = isNettoDeducted < bigTaxThreshold ? (isNettoDeducted * 0.18) - (healthCare - (healthCare*0.075)) : bigTaxThreshold * 0.1775
+    
+    const tax18 = tax18Calc <= 0 ? 0 : tax18Calc
 
     const tax19 = isNettoDeducted * 0.19
     const tax32 = isNettoDeducted > bigTaxThreshold ? (isNettoDeducted - bigTaxThreshold) * 0.32 : 0    
     const incomeTax = vatType === 19 ? tax19 : tax18 + tax32
-    const onHand = isNettoDeducted - vatTax - nettoCost - (incomeTax < 0 ? 0 : incomeTax) - contributons
+    const onHand = nettoValue - nettoCost - (incomeTax < 0 ? 0 : incomeTax) - contributons
 
     return (
       <ThemeProvider theme={theme} >
@@ -139,7 +138,7 @@ class App extends Component {
 
           <div className='align'>
             <TextField
-            inputProps={{ maxLength: 10, min: 0 }}
+            inputProps={{ maxLength: 7, min: 0 }}
             fullWidth
             type='number'
             name='nettoValue'
@@ -189,7 +188,7 @@ class App extends Component {
               labelWidth={186}
               style={{marginRight: 15}}
               >
-                <MenuItem value={17.75}>{`Stawka progresywna - 17,75%/32%`}</MenuItem>
+                <MenuItem value={18}>{`Stawka progresywna - 18%/32%`}</MenuItem>
                 <MenuItem value={19}>{`Stawka liniowa - 19%`}</MenuItem>
               </Select>
             </FormControl>
@@ -233,10 +232,10 @@ class App extends Component {
             <React.Fragment>
               <Typography>Kwota wolna od podatku</Typography>
               <p>Kwota jest wolna od opodatkowania jeśli nie przekracza 8000 zł w skali roku. Możliwość zmniejszenia podatku ma zastosowanie tylko gdy formą opodatkowania jest skala podatkowa.<br/><br/>Roczna kwota zmiejszająca podatek:<br/><br/>
-              Do 8000 zł, kwota wolna od podatku wyniesie 1420 zł.<br/><br/>
-              Między 8001 a 13000 zł, kwota jest obliczana wg wzoru: <em>1 420 zł pomniejszone o kwotę obliczoną według wzoru: 871 zł 70 gr × (podstawa obliczenia podatku – 8000 zł) ÷ 5 000 zł.</em><br/><br/>
-              Między 13001 a 85528 zł, kwota wolna od podatku wyniesie 548,30 zł.<br/><br/>
-              Między 85529 a 127000 zł, kwota jest obliczana wg wzoru: <em>548 zł 30 gr pomniejszone o kwotę obliczoną według wzoru: 548 zł 30 gr × (podstawa obliczenia podatku – 85528 zł) ÷ 41472 zł.</em><br/><br/>
+              Do 8000 zł, kwota wolna od podatku wyniesie 1420 zł.<Divider/>
+              Między 8001 a 13000 zł, kwota jest obliczana wg wzoru: <em>1 420 zł pomniejszone o kwotę obliczoną według wzoru: 871 zł 70 gr × (podstawa obliczenia podatku – 8000 zł) ÷ 5 000 zł.</em><Divider/>
+              Między 13001 a 85528 zł, kwota wolna od podatku wyniesie 548,30 zł.<Divider/>
+              Między 85529 a 127000 zł, kwota jest obliczana wg wzoru: <em>548 zł 30 gr pomniejszone o kwotę obliczoną według wzoru: 548 zł 30 gr × (podstawa obliczenia podatku – 85528 zł) ÷ 41472 zł.</em><Divider/>
               Od 127001 zł i więcej, brak kwoty zmiejszającej podatek.
               </p>
             </React.Fragment>
@@ -302,16 +301,11 @@ class App extends Component {
             <div className='align'>
               <TextField
               fullWidth
-              type='number'
               name='nettoCost'
               label='Koszty netto'
               variant='outlined'
               color='primary'
-              InputProps={{
-                maxLength: 10,
-                min: 0
-              }}
-              inputProps={{ maxLength: 0, min: 0 }}
+              inputProps={{ maxLength: 7, min: 0 }}
               onChange={this.handleCostAdd}
               value={this.state.nettoCost}
               />
@@ -375,7 +369,7 @@ class App extends Component {
               <Divider/>
             {/* ELEMENT END */}
                 {
-                  vatType === 17.75 ?
+                  vatType === 18 ?
                   <React.Fragment>
                     {/* ELEMENT START */}
                 <div className='align bt mt'>
