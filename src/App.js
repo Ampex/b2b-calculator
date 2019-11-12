@@ -44,7 +44,7 @@ class App extends Component {
       return 548.3
     } else if (caseValue > 85528 && caseValue <= 127000) {
       return 548.3 - (548.3 * (caseValue - 85528) / 41472)
-    } else if (caseValue > 127001) {
+    } else if (caseValue >= 127001) {
       return 0
     }    
   }
@@ -94,7 +94,7 @@ class App extends Component {
     const { nettoValue, vatRatio, nettoDeduction, vatType, isSickness, isDeducted, nettoCost, isTaxFree, isTaxFreeValue } = this.state
 
     const isNettoDeducted = nettoValue - nettoCost
-    
+
     const socialRatio = isDeducted ? 675 : 2859
     const healthRatio = 3803.56
     const pensionRatio = 0.1952
@@ -110,20 +110,18 @@ class App extends Component {
     const sickness = isSickness ? sicknessRatio*socialRatio : 0
     const labor = isDeducted ? 0 : laborRatio*socialRatio
     const healthCare = 0.09*healthRatio
-
     const social = pension + pensionDisability + accident + sickness
     const contributons = social + labor + healthCare
 
     const bigTaxThreshold = 85528
     const tax18Calc = isNettoDeducted <= bigTaxThreshold ? isNettoDeducted * (vatType/100) : bigTaxThreshold * 0.1775
-    const tax18Deducted = tax18Calc - (isTaxFree && isTaxFreeValue )
-    
-    const tax18 = tax18Deducted <= 0 ? 0 : tax18Deducted
+    const tax18Deducted = tax18Calc - (isTaxFree && isTaxFreeValue )    
+    const tax18 = tax18Deducted <= 0 ? 0 : tax18Calc
     const tax19 = isNettoDeducted * 0.19
     const tax32 = isNettoDeducted > bigTaxThreshold ? (isNettoDeducted - bigTaxThreshold) * 0.32 : 0    
     const incomeTax = vatType === 19 ? tax19 : tax18 + tax32
     const onHand = isNettoDeducted - vatTax - nettoCost - (incomeTax < 0 ? 0 : incomeTax) - contributons
-
+    
     return (
       <ThemeProvider theme={theme} >
       <h1 style={{textAlign: 'center'}} >Kalkulator wynagrodzenia B2B</h1>
@@ -205,8 +203,8 @@ class App extends Component {
               Skala II<Divider/>
               32% od nadwyżki ponad 85 528 zł.<br/><br/>
               
-              Podatek liniowy
-              OpisPodczas opodatkowania podatkiem liniowym podatek opłaca się według stałej stawki 19% bez względu na wysokość osiąganego dochodu. Rozliczając się podatkiem liniowym tracimy możliwość skorzystania z ulg podatkowych oraz uwzględnienia kwoty wolnej od podatku.
+              Podatek liniowy<br/>
+              Podczas opodatkowania podatkiem liniowym podatek opłaca się według stałej stawki 19% bez względu na wysokość osiąganego dochodu. Rozliczając się podatkiem liniowym tracimy możliwość skorzystania z ulg podatkowych oraz uwzględnienia kwoty wolnej od podatku.
             </React.Fragment>
             }
             placement='right'
