@@ -93,6 +93,7 @@ class App extends Component {
     
     const { nettoValue, vatRatio, nettoDeduction, vatType, isSickness, isDeducted, nettoCost, isTaxFree, isTaxFreeValue } = this.state
 
+    const nettoWithVAT = nettoValue + (nettoValue*1.23)
     const isNettoDeducted = nettoValue - nettoCost
 
     const socialRatio = isDeducted ? 675 : 2859
@@ -114,9 +115,11 @@ class App extends Component {
     const contributons = social + labor + healthCare
 
     const bigTaxThreshold = 85528
+
     const tax18Calc = isNettoDeducted <= bigTaxThreshold ? isNettoDeducted * (vatType/100) : bigTaxThreshold * 0.1775
     const tax18Deducted = tax18Calc - (isTaxFree && isTaxFreeValue )    
-    const tax18 = tax18Deducted <= 0 ? 0 : tax18Calc
+    const tax18 = tax18Deducted <= 0 ? 0 : tax18Deducted
+
     const tax19 = isNettoDeducted * 0.19
     const tax32 = isNettoDeducted > bigTaxThreshold ? (isNettoDeducted - bigTaxThreshold) * 0.32 : 0    
     const incomeTax = vatType === 19 ? tax19 : tax18 + tax32
