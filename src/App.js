@@ -93,7 +93,7 @@ class App extends Component {
     
     const { nettoValue, vatRatio, nettoDeduction, vatType, isSickness, isDeducted, nettoCost, isTaxFree, isTaxFreeValue } = this.state
 
-    const isNettoDeducted = nettoValue - nettoCost - (isTaxFree && isTaxFreeValue )
+    const isNettoDeducted = nettoValue - nettoCost - (isTaxFree && isTaxFreeValue)
 
     const socialRatio = isDeducted ? 675 : 2859
     const healthRatio = 3803.56
@@ -113,7 +113,7 @@ class App extends Component {
     const social = pension + pensionDisability + accident + sickness
     const contributons = social + labor + healthCare
 
-    const bigTaxThreshold = 85528
+    const bigTaxThreshold = 85528 + (isTaxFree && isTaxFreeValue)
 
     const tax18Calc = isNettoDeducted < bigTaxThreshold ? (isNettoDeducted * 0.18) - (healthCare - (healthCare*0.075)) : bigTaxThreshold * 0.1775
     
@@ -122,7 +122,7 @@ class App extends Component {
     const tax19 = isNettoDeducted * 0.19
     const tax32 = isNettoDeducted > bigTaxThreshold ? (isNettoDeducted - bigTaxThreshold) * 0.32 : 0    
     const incomeTax = vatType === 19 ? tax19 : tax18 + tax32
-    const onHand = nettoValue - nettoCost - (incomeTax < 0 ? 0 : incomeTax) - contributons
+    const onHand = nettoDeduction + nettoValue - nettoCost - (incomeTax < 0 ? 0 : incomeTax) - contributons
 
     return (
       <ThemeProvider theme={theme} >
@@ -305,7 +305,7 @@ class App extends Component {
               label='Koszty netto'
               variant='outlined'
               color='primary'
-              inputProps={{ maxLength: 7, min: 0 }}
+              inputProps={{ maxLength: 7 }}
               onChange={this.handleCostAdd}
               value={this.state.nettoCost}
               />
@@ -313,12 +313,11 @@ class App extends Component {
             <div className='align'>
               <TextField
               fullWidth
-              type='number'
               name='nettoDeduction'
               label='Odliczenie VAT'
               variant='outlined'
               color='primary'
-              inputProps={{ maxLength: 0, min: 0 }}
+              inputProps={{ maxLength: 7, min: 0 }}
               onChange={this.handleCostAdd}
               value={this.state.nettoDeduction}
               />
