@@ -14,7 +14,7 @@ const theme = createMuiTheme ({
       tooltip: {
         backgroundColor: '#fff',
         color: '#222',
-        fontSize: 16,
+        fontSize: 15,
         boxShadow: '1px 2px 10px 0 rgba(0,0,0,.2)'
       }
     }
@@ -121,10 +121,11 @@ class App extends Component {
     const tax32 = isNettoDeducted > bigTaxThreshold ? (isNettoDeducted - bigTaxThreshold) * 0.32 : 0    
     const incomeTax = vatType === 19 ? tax19 : tax18 + tax32
     const onHand = isNettoDeducted - vatTax - nettoCost - (incomeTax < 0 ? 0 : incomeTax) - contributons
-    
+
     return (
       <ThemeProvider theme={theme} >
-      <h1 style={{textAlign: 'center'}} >Kalkulator wynagrodzenia B2B</h1>
+      <h1 style={{textAlign: 'center'}} >Kalkulator wynagrodzenia B2B - 2019</h1>
+      
       <div className='container'>
         
         <div className="content">
@@ -228,7 +229,13 @@ class App extends Component {
               <Tooltip title={
             <React.Fragment>
               <Typography>Kwota wolna od podatku</Typography>
-              <p>Kwota jest wolna od opodatkowania jeśli nie przekracza 3091 zł w skali roku. Możliwość zmniejszenia podatku o 556,02 zł rocznie tylko gdy formą opodatkowania jest skala podatkowa.</p>
+              <p>Kwota jest wolna od opodatkowania jeśli nie przekracza 8000 zł w skali roku. Możliwość zmniejszenia podatku ma zastosowanie tylko gdy formą opodatkowania jest skala podatkowa.<br/><br/>Roczna kwota zmiejszająca podatek:<br/><br/>
+              Do 8000 zł, kwota wolna od podatku wyniesie 1420 zł.<br/><br/>
+              Między 8001 a 13000 zł, kwota jest obliczana wg wzoru: <em>1 420 zł pomniejszone o kwotę obliczoną według wzoru: 871 zł 70 gr × (podstawa obliczenia podatku – 8000 zł) ÷ 5 000 zł.</em><br/><br/>
+              Między 13001 a 85528 zł, kwota wolna od podatku wyniesie 548,30 zł.<br/><br/>
+              Między 85529 a 127000 zł, kwota jest obliczana wg wzoru: <em>548 zł 30 gr pomniejszone o kwotę obliczoną według wzoru: 548 zł 30 gr × (podstawa obliczenia podatku – 85528 zł) ÷ 41472 zł.</em><br/><br/>
+              Od 127001 zł i więcej, brak kwoty zmiejszającej podatek.
+              </p>
             </React.Fragment>
             }
             placement='right'
