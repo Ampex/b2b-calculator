@@ -1,5 +1,3 @@
-W TRAKCIE PRODUKCJI!
-
 Aplikacja kalkulatora rozliczeń B2B
 
 # Demo na żywo tutaj: [DEMO](https://bkasperski.pl/b2b)
