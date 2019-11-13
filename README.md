@@ -9,13 +9,10 @@ Select, Divider, Link, Switch, Tooltip, TextField, Typography, MenuItem, FormCon
 
 ## Instalacja:
 
-
-Install via npm:
-$ npm install @ampex/b2b-calculator@0.1.0
-
-Install via package.json:
-"@ampex/b2b-calculator": "0.1.0"
-
-`<addr>` element here instead.
+`Instalacja poprzez npm:
+"$ npm install @ampex/b2b-calculator@0.1.0`
+lub
+`Instalacja poprzez package.json:
+"@ampex/b2b-calculator": "0.1.0"`
 
 Podaruj gwiazdkę jak się podoba ;)
