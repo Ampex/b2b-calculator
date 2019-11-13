@@ -1,6 +1,6 @@
 Aplikacja kalkulatora rozliczeń B2B
 
-# Demo na żywo tutaj: [DEMO](https://github.com/Ampex/b2b-calculator)
+# Demo na żywo tutaj: [DEMO](https://ampex.github.io/b2b-calculator/)
 
 ## Material UI dla React
 ### Użyte komponenty:
