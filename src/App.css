@@ -30,6 +30,12 @@
       height: auto !important;
       box-sizing: 0 !important;
     }
+    .title {
+      flex-direction: column !important;
+      text-align: center !important;
+      margin-bottom: 25px !important;
+      font-size: 12px !important;
+    }
     .element {
       background-color: none !important;
       box-shadow: none !important;
@@ -110,21 +116,11 @@ body {
   color: red
 }
 .mt {
-  margin-top: 15px;
+  margin-top: 14px;
 }
 .bt {
   justify-content: space-between;
 }
-.margin {
+.title {
   justify-content: center;
-}
-
-.margin > * {
-  margin: 15px;
-}
-
-code {
-  font-family: var(--code);
-  font-size: 12px;
-  color: #222;
 }

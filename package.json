@@ -1,5 +1,5 @@
 {
-  "homepage": "https://bkasperski.pl/b2b/",
+  "homepage": "https://ampex.github.io/b2b/",
   "name": "my-app",
   "version": "0.1.0",
   "private": true,
@@ -10,6 +10,7 @@
     "@material-ui/styles": "^4.5.2",
     "@nivo/pie": "^0.59.1",
     "add": "^2.0.6",
+    "gh-pages": "^2.1.1",
     "react": "^16.11.0",
     "react-dom": "^16.11.0",
     "react-material-ui-form-validator": "^2.0.9",
@@ -17,6 +18,8 @@
     "recharts": "^1.8.5"
   },
   "scripts": {
+    "predeplay": "npm run build",
+    "deplay": "gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

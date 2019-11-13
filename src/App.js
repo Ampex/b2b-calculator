@@ -127,8 +127,8 @@ class App extends Component {
 
     return (
       <ThemeProvider theme={theme} >
-      <div className='align margin'>
-        <h1>Kalkulator wynagrodzenia B2B - 2019</h1>
+      <div className='align title'>
+        <h1 style={{marginRight: 20}} >Kalkulator wynagrodzenia B2B - 2019</h1>
         <GitButtons/>
       </div>
       <div className='container'>
