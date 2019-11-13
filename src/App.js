@@ -163,7 +163,7 @@ class App extends Component {
               <HelpOutlineIcon />
             </Tooltip>
           </div>
-
+          
           <div className='align'>
             <FormControl style={{marginRight: 40}} variant='outlined' fullWidth>
               <InputLabel>Stawka VAT</InputLabel>
@@ -252,7 +252,7 @@ class App extends Component {
           {/* END */}
           {/* START */}
           <div className='element'>
-            <strong style={{marginBottom: 20}} >Informacje o ZUS</strong>
+            <strong>Informacje o ZUS</strong>
             <div className='align bt'>
               <React.Fragment>
                 <div className='align'>
@@ -299,7 +299,7 @@ class App extends Component {
           {/* END */}
           {/* START */}
           <div className='element'>
-            <strong style={{marginBottom: 20}} >Informacje o kosztach</strong>
+            <strong>Informacje o kosztach</strong>
 
             <div className='align'>
               <TextField

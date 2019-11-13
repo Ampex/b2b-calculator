@@ -70,7 +70,7 @@ body {
   box-shadow: var(--shadow);
 }
 .content {
-  height: 800px;
+  height: 670px;
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
@@ -79,8 +79,8 @@ body {
 .element {
   display: flex;
   flex-direction: column;
-  padding: 25px;
-  width: 44.44%;
+  padding: 5px 15px;
+  width: 46.44%;
 }
 .element > * {
   margin-bottom: 15px;
