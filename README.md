@@ -7,4 +7,15 @@ Aplikacja kalkulatora rozliczeń B2B
 
 Select, Divider, Link, Switch, Tooltip, TextField, Typography, MenuItem, FormControl, InputLabel, ThemeProvider, createMuiTheme
 
+## Instalacja:
+
+
+Install via npm:
+$ npm install @ampex/b2b-calculator@0.1.0
+
+Install via package.json:
+"@ampex/b2b-calculator": "0.1.0"
+
+`<addr>` element here instead.
+
 Podaruj gwiazdkę jak się podoba ;)
