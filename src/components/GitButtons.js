@@ -3,7 +3,8 @@ import React from 'react'
 
 const GitButtons = () => {
     return (
-        <iframe title='gitButtons' src="https://ghbtns.com/github-btn.html?user=Ampex&repo=b2b&type=star&count=true&size=large" frameBorder="0" scrolling="0" width="70px" height="30px"></iframe>
+        
+<a className="github-button" href="https://github.com/Ampex/b2b-calculator" data-icon="octicon-star" data-size="large" data-show-count="true" aria-label="Star Ampex/b2b on GitHub">Star</a>
     )
 }
  
