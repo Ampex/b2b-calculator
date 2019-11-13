@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './App.css'
+import GitButtons from './components/GitButtons'
 import { Select, Divider, Link, Switch, Tooltip, TextField, Typography, MenuItem, FormControl, InputLabel } from '@material-ui/core'
 import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles'
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline'
@@ -126,8 +127,10 @@ class App extends Component {
 
     return (
       <ThemeProvider theme={theme} >
-      <h1 style={{textAlign: 'center'}} >Kalkulator wynagrodzenia B2B - 2019</h1>
-      
+      <div className='align margin'>
+        <h1>Kalkulator wynagrodzenia B2B - 2019</h1>
+        <GitButtons/>
+      </div>
       <div className='container'>
         
         <div className="content">

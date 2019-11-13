@@ -115,6 +115,13 @@ body {
 .bt {
   justify-content: space-between;
 }
+.margin {
+  justify-content: center;
+}
+
+.margin > * {
+  margin: 15px;
+}
 
 code {
   font-family: var(--code);
