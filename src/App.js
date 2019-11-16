@@ -25,7 +25,7 @@ const theme = createMuiTheme ({
 class App extends Component {
 
   state = {
-    nettoValue: 4000,
+    nettoValue: 6000,
     vatRatio: 23,
     vatType: 18,
     nettoCost: '',
@@ -94,7 +94,7 @@ class App extends Component {
     
     const { nettoValue, vatRatio, nettoDeduction, vatType, isSickness, isDeducted, nettoCost, isTaxFree, isTaxFreeValue } = this.state
 
-    const isNettoDeducted = nettoValue - nettoCost - (isTaxFree && isTaxFreeValue)
+    const isNettoDeducted = nettoValue - nettoCost
 
     const socialRatio = isDeducted ? 675 : 2859
     const healthRatio = 3803.56
@@ -104,7 +104,7 @@ class App extends Component {
     const sicknessRatio = 0.0245
     const laborRatio = 0.0245
 
-    const vatTax = (vatRatio/100*isNettoDeducted) - nettoDeduction
+    const vatTax = ((vatRatio/100)*nettoValue) - nettoDeduction
     const pension = pensionRatio*socialRatio
     const pensionDisability = pensionDisabilityRatio*socialRatio
     const accident = accidentRatio*socialRatio
@@ -115,15 +115,21 @@ class App extends Component {
     const contributons = social + labor + healthCare
 
     const bigTaxThreshold = 85528 + (isTaxFree && isTaxFreeValue)
+    const BigTaxLimit = bigTaxThreshold * 0.1775 - (healthCare - (healthCare*0.075))
 
-    const tax18Calc = isNettoDeducted < bigTaxThreshold ? (isNettoDeducted * 0.18) - (healthCare - (healthCare*0.075)) : bigTaxThreshold * 0.1775
+    const tax18Calc = (isNettoDeducted * 0.1775) - (healthCare - (healthCare*0.075))
+
+    const tax18Ready = isNettoDeducted < bigTaxThreshold ?
     
-    const tax18 = tax18Calc <= 0 ? 0 : tax18Calc
-
+    tax18Calc - (isTaxFree && isTaxFreeValue) : BigTaxLimit
+  
+    const tax18 = tax18Ready < 0 ? 0 : tax18Ready
     const tax19 = isNettoDeducted * 0.19
     const tax32 = isNettoDeducted > bigTaxThreshold ? (isNettoDeducted - bigTaxThreshold) * 0.32 : 0    
+    console.log(tax18)
+    
     const incomeTax = vatType === 19 ? tax19 : tax18 + tax32
-    const onHand = nettoDeduction + nettoValue - nettoCost - (incomeTax < 0 ? 0 : incomeTax) - contributons
+    const onHand = nettoDeduction + nettoValue - nettoCost - (incomeTax < 0 ? 0 : incomeTax) - contributons    
 
     return (
       <ThemeProvider theme={theme} >
@@ -234,13 +240,13 @@ class App extends Component {
               <Tooltip title={
             <React.Fragment>
               <Typography>Kwota wolna od podatku</Typography>
-              <p>Kwota jest wolna od opodatkowania jeśli nie przekracza 8000 zł w skali roku. Możliwość zmniejszenia podatku ma zastosowanie tylko gdy formą opodatkowania jest skala podatkowa.<br/><br/>Roczna kwota zmiejszająca podatek:<br/><br/>
+              Kwota jest wolna od opodatkowania jeśli nie przekracza 8000 zł w skali roku. Możliwość zmniejszenia podatku ma zastosowanie tylko gdy formą opodatkowania jest skala podatkowa.<br/><br/>Roczna kwota zmiejszająca podatek:<br/><br/>
               Do 8000 zł, kwota wolna od podatku wyniesie 1420 zł.<Divider/>
               Między 8001 a 13000 zł, kwota jest obliczana wg wzoru: <em>1 420 zł pomniejszone o kwotę obliczoną według wzoru: 871 zł 70 gr × (podstawa obliczenia podatku – 8000 zł) ÷ 5 000 zł.</em><Divider/>
               Między 13001 a 85528 zł, kwota wolna od podatku wyniesie 548,30 zł.<Divider/>
               Między 85529 a 127000 zł, kwota jest obliczana wg wzoru: <em>548 zł 30 gr pomniejszone o kwotę obliczoną według wzoru: 548 zł 30 gr × (podstawa obliczenia podatku – 85528 zł) ÷ 41472 zł.</em><Divider/>
               Od 127001 zł i więcej, brak kwoty zmiejszającej podatek.
-              </p>
+              
             </React.Fragment>
             }
             placement='right'
