@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/b2b-calculator/static/css/main.2de58cb9.chunk.css",
-    "main.js": "/b2b-calculator/static/js/main.706cb05e.chunk.js",
-    "main.js.map": "/b2b-calculator/static/js/main.706cb05e.chunk.js.map",
+    "main.js": "/b2b-calculator/static/js/main.a7c64cac.chunk.js",
+    "main.js.map": "/b2b-calculator/static/js/main.a7c64cac.chunk.js.map",
     "runtime-main.js": "/b2b-calculator/static/js/runtime-main.8cee3bca.js",
     "runtime-main.js.map": "/b2b-calculator/static/js/runtime-main.8cee3bca.js.map",
     "static/js/2.badbbe35.chunk.js": "/b2b-calculator/static/js/2.badbbe35.chunk.js",
     "static/js/2.badbbe35.chunk.js.map": "/b2b-calculator/static/js/2.badbbe35.chunk.js.map",
     "index.html": "/b2b-calculator/index.html",
-    "precache-manifest.a9e9d017f29b6790b72be117872e22e3.js": "/b2b-calculator/precache-manifest.a9e9d017f29b6790b72be117872e22e3.js",
+    "precache-manifest.2a5502b3a84e26ee8f11ea49e391ee0b.js": "/b2b-calculator/precache-manifest.2a5502b3a84e26ee8f11ea49e391ee0b.js",
     "service-worker.js": "/b2b-calculator/service-worker.js",
     "static/css/main.2de58cb9.chunk.css.map": "/b2b-calculator/static/css/main.2de58cb9.chunk.css.map"
   },
@@ -16,6 +16,6 @@
     "static/js/runtime-main.8cee3bca.js",
     "static/js/2.badbbe35.chunk.js",
     "static/css/main.2de58cb9.chunk.css",
-    "static/js/main.706cb05e.chunk.js"
+    "static/js/main.a7c64cac.chunk.js"
   ]
 }

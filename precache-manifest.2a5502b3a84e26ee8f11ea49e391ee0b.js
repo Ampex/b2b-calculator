@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "f754c051d6f6a64fdebcbd3fa07ed69b",
+    "revision": "4bdf94956e8d8f355799e8df6aec7009",
     "url": "/b2b-calculator/index.html"
   },
   {
-    "revision": "7045c1b37e86c6eca2aa",
+    "revision": "8c0a019fd27b79e8a36f",
     "url": "/b2b-calculator/static/css/main.2de58cb9.chunk.css"
   },
   {
@@ -12,8 +12,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/b2b-calculator/static/js/2.badbbe35.chunk.js"
   },
   {
-    "revision": "7045c1b37e86c6eca2aa",
-    "url": "/b2b-calculator/static/js/main.706cb05e.chunk.js"
+    "revision": "8c0a019fd27b79e8a36f",
+    "url": "/b2b-calculator/static/js/main.a7c64cac.chunk.js"
   },
   {
     "revision": "057b3bc5d1ce408fdf80",
