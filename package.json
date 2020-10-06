@@ -9,13 +9,16 @@
     "@material-ui/lab": "^4.0.0-alpha.29",
     "@material-ui/styles": "^4.5.2",
     "@nivo/pie": "^0.59.1",
+    "@types/react": "^16.9.50",
+    "@types/react-dom": "^16.9.8",
     "add": "^2.0.6",
     "gh-pages": "^2.1.1",
     "react": "^16.11.0",
     "react-dom": "^16.11.0",
     "react-material-ui-form-validator": "^2.0.9",
     "react-scripts": "^3.2.0",
-    "recharts": "^1.8.5"
+    "recharts": "^1.8.5",
+    "typescript": "^4.0.3"
   },
   "scripts": {
     "predeplay": "npm run build",
